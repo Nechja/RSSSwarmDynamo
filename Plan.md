@@ -32,6 +32,7 @@
 - Lets containers know if they can scale back or stay idle for more work.
 - The leader would be the last one left running if there is no work, checking and seeing if the tasks in MongoDB set scaling levels.
 
+```
 Starting basics:
 |-- /app
 |   |-- __init__.py
@@ -55,6 +56,6 @@ Starting basics:
 |-- requirements.txt
 |-- Dockerfile
 |-- docker-compose.yml
-
+```
 
 Notes: container will need to map to: /var/run/docker.sock:/var/run/docker.sock 
