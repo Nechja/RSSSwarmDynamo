@@ -47,12 +47,10 @@ Starting basics:
 |   |   |-- __init__.py
 |   |   |-- docker_api.py
 |   |   |-- mongodb_client.py
-|   |-- main.py
-|-- /config
-|   |-- __init__.py
-|   |-- config.py
-|-- /tests
-|   |-- __init__.py
+|   |-- /config
+|   |   |-- __init__.py
+|   |   |-- config.py
+|-- main.py
 |-- requirements.txt
 |-- Dockerfile
 |-- docker-compose.yml
