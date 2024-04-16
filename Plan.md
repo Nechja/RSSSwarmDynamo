@@ -1,5 +1,6 @@
 **Step 1: Container Initialization**
 - [x] Each container starts and initializes its environment.
+- ?? Thinking of adding a cron job in side the container to handle events...not sure...
 
 **Step 2: Leader Election**
 - [x] Attempts to elect a leader using `findAndModify` on a specific MongoDB document reserved for leader election.
