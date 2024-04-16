@@ -7,14 +7,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock  
     environment:
       - ENV=development
-      - LEADER_LEASE_DURATION=30
-      - MONGODB_URI=mongodb://nightblood.local:27017
+      - LEADER_LEASE_DURATION=10
+      - MONGODB_URI=mongodb://mongoserver:27017
       - DB_NAME=Swarmer
     deploy:
       replicas: 3
       resources:
         limits:
-          cpus: "2"
+          cpus: "1"
           memory: 50M
       restart_policy:
         condition: on-failure

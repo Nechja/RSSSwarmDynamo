@@ -1,10 +1,10 @@
 **Step 1: Container Initialization**
-- Each container starts and initializes its environment.
-- Attempts to elect a leader using `findAndModify` on a specific MongoDB document reserved for leader election.
+- [x] Each container starts and initializes its environment.
 
 **Step 2: Leader Election**
-- The container checks if there is a current leader by querying the 'leader' document which includes a timestamp.
-- If the timestamp is outdated (i.e., the current leader has not updated it within a specific interval), the container attempts to declare itself as the new leader.
+- [x] Attempts to elect a leader using `findAndModify` on a specific MongoDB document reserved for leader election.
+- [x] The container checks if there is a current leader by querying the 'leader' document which includes a timestamp.
+- [x] If the timestamp is outdated (i.e., the current leader has not updated it within a specific interval), the container attempts to declare itself as the new leader.
 
 **Step 3: Continuous Monitoring (Leader Only)**
 - The leader continuously monitors the MongoDB for new or pending tasks.
@@ -51,9 +51,8 @@ Starting basics:
 |   |   |-- __init__.py
 |   |   |-- config.py
 |-- main.py
+|-- entrypoint.sh
 |-- requirements.txt
 |-- Dockerfile
 |-- docker-compose.yml
 ```
-
-Notes: container will need to map to: /var/run/docker.sock:/var/run/docker.sock 
