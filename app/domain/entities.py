@@ -3,6 +3,7 @@ class Task:
         self.id = id
         self.description = description
         self.status = status
+        
 
 class Leader:
     def __init__(self, id, last_active):
