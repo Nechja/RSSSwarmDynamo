@@ -16,7 +16,7 @@
 - Uses Docker API to adjust the number of containers.
 
 **Step 5: Task Assignment**
-- The containers independently pull tasks from MongoDB.
+- [x] The containers independently pull tasks from MongoDB.
 
 **Step 6: Task Processing**
 - Each container processes its assigned tasks.

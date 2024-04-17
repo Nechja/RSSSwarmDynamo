@@ -18,3 +18,20 @@ class MonitoringService:
 
     def monitor_system(self):
         pass
+
+class TaskService:
+    def __init__(self, db_client: MongoDBClient, config: Config):
+        self.config = config
+        self.db_client = db_client
+        print("Task Service Started Up")
+
+    async def check_for_work(self):
+        
+        return await self.db_client.check_for_work()
+    
+    async def checkout_task(self, task):
+        return await self.db_client.checkout_task(task, self.config.CONTAINER_ID)
+        
+
+    async def run_task(self, task):
+        pass
