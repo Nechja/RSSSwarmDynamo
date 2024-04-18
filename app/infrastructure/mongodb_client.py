@@ -53,16 +53,21 @@ class MongoDBClient:
         collection = self.db['Tasks']
         now = datetime.now()
         result = await collection.find({
-            '$or': [
+            '$and': [
                 {'assignee': None}, 
-                {'lastrun': {'$exists': False}}, 
-                {'occurance': Occurance.ONCE.value, 'lastrun': {'$exists': True}}, 
-                {'occurance': Occurance.HOURLY.value, 'lastrun': {'$lt': now - timedelta(hours=1)}},
-                {'occurance': Occurance.DAILY.value, 'lastrun': {'$lt': now - timedelta(days=1)}},
-                {'occurance': Occurance.WEEKLY.value, 'lastrun': {'$lt': now - timedelta(weeks=1)}}
+                {
+                    '$or': [
+                        {'lastrun': {'$exists': False}},
+                        {'occurance': Occurance.HOURLY.value, 'lastrun': {'$lt': now - timedelta(hours=1)}},
+                        {'occurance': Occurance.DAILY.value, 'lastrun': {'$lt': now - timedelta(days=1)}},
+                        {'occurance': Occurance.WEEKLY.value, 'lastrun': {'$lt': now - timedelta(weeks=1)}}
+                    ]
+                }
             ]
         }).to_list(None)
         return result
+
+
     
     async def checkout_task(self, task, assignee):
         print(f"Checking out task {task['name']}...")
@@ -94,3 +99,5 @@ class MongoDBClient:
             print(f'Error on task assingment {e}')
             return None
         return result
+    
+    

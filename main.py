@@ -19,18 +19,8 @@ if __name__ == '__main__':
         else:
             print("I am not leader... searching for work to do...")
             task_service = TaskService(db_client, config)
-            tasks = await task_service.check_for_work()
-            if tasks:
-                print(f"Found {len(tasks)} tasks to do.")
-                for task in tasks:
-                    print(f"Challanging task {task['name']}")
-                    challange = await task_service.checkout_task(task)
-                    print(challange)
-                    if challange:
-                        print(f"Challanged task {task['name']}")
-
-                    await task_service.run_task(task)
-            else:
+            tasks = await task_service.start()
+            if not tasks:
                 print("No tasks found. Reporting in and Going to sleep.")
 
 

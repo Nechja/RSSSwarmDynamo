@@ -1,6 +1,7 @@
 from ..infrastructure.mongodb_client import MongoDBClient
 from ..infrastructure.docker_api import DockerAPI
 from ..config.config import Config
+import time
 
 class LeaderElectionService:
     def __init__(self, db_client: MongoDBClient, config: Config):
@@ -25,13 +26,34 @@ class TaskService:
         self.db_client = db_client
         print("Task Service Started Up")
 
-    async def check_for_work(self):
+    async def start(self):
+        tasks = await self.db_client.check_for_work()
+        if not tasks:
+            print("No tasks found.")
+            return None
+        if tasks:
+            print(f"Found {len(tasks)} tasks to do.")
+            for task in tasks:
+                print(f"Challanging task {task['name']}")
+                challange = await self.checkout_task(task)
+                print(challange)
+                if challange:
+                    print(f"Challanged task {task['name']}")
+                    await self.run_task(task)
+                    break
+
+            print("winding into next task...")
+            await self.start()
+
+
         
-        return await self.db_client.check_for_work()
     
     async def checkout_task(self, task):
         return await self.db_client.checkout_task(task, self.config.CONTAINER_ID)
         
 
     async def run_task(self, task):
-        pass
+        time.sleep(30)
+        print(f"Task {task['name']} completed.")
+
+
