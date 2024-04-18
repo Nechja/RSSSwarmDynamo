@@ -2,6 +2,7 @@ from app.infrastructure.mongodb_client import MongoDBClient
 from app.infrastructure.docker_api import DockerAPI
 from app.application.services import LeaderElectionService, MonitoringService, TaskService
 from app.config.config import DevelopmentConfig, ProductionConfig, Config
+from app.infrastructure.flask_service import FlaskService
 import os
 import asyncio
 
@@ -18,10 +19,8 @@ if __name__ == '__main__':
             monitoring_service.monitor_system()
         else:
             print("I am not leader... searching for work to do...")
-            task_service = TaskService(db_client, config)
-            tasks = await task_service.start()
-            if not tasks:
-                print("No tasks found. Reporting in and Going to sleep.")
+            flask_service = FlaskService(config)
+            flask_service.run()
 
 
 
