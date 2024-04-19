@@ -29,6 +29,9 @@ class FlaskService:
                 return jsonify({'message': 'Task received', 'task': task.name}), 200
             except (KeyError, ValueError) as e:
                 return jsonify({'error': str(e)}), 400
+        @self.app.route('/health', methods=['GET'])
+        def health():
+            return jsonify({'status': 'ok'}), 200
         
     def run(self):
-        self.app.run(debug=self.config.DEBUG)
+        self.app.run(host='0.0.0.0',port=3333,debug=self.config.DEBUG)

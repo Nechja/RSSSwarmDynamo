@@ -17,8 +17,32 @@ class MonitoringService:
         self.docker_api = docker_api
         print("MonitoringService Started Up")
 
-    def monitor_system(self):
-        pass
+    def report_container_health(self):
+        container_ids = self.docker_api.container_ids()
+        health_status = {container_id: self.docker_api.check_health(container_id) for container_id in container_ids}
+        print(health_status)
+        return health_status
+
+    def report_container_resources(self):
+        return self.docker_api.check_resources()
+
+    def alert_high_resource_usage(self, cpu_threshold=80, memory_threshold=80):
+        resources = self.docker_api.check_resources()
+        print(resources)
+
+    def monitor_containers(self):
+        import time
+        try:
+            while True:
+                print("Reporting Container Health")
+                print(self.report_container_health())
+                print("Reporting Resource Usage")
+                print(self.report_container_resources())
+                self.alert_high_resource_usage()
+                time.sleep(60)  
+        except KeyboardInterrupt:
+            print("Monitoring stopped by user.")
+
 
 class TaskService:
     def __init__(self, db_client: MongoDBClient, config: Config):
