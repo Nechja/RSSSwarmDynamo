@@ -18,6 +18,9 @@ class MonitoringService:
         self.config = config
         print("MonitoringService Started Up")
 
+    def get_my_ip(self):
+        return self.docker_api.get_container_ip(self.config.CONTAINER_ID)
+
     def get_containers(self):
         return self.docker_api.container_ids()
     

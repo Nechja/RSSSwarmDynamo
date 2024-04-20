@@ -28,4 +28,15 @@ class Leader:
         self.id = id
         self.last_active = last_active
 
+class NodeInfo:
+    def __init__(self, id, ip):
+        self.id = id
+        self.ip = ip
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'ip': self.ip
+        }
+
 

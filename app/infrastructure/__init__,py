@@ -1,3 +1,4 @@
 from .docker_api import DockerAPI
 from .mongodb_client import MongoDBClient
 from .flask_service import FlaskService
+from .http_client import HttpClient
