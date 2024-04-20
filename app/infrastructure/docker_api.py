@@ -1,8 +1,10 @@
-import docker
+from docker import DockerClient, APIClient
 
-class DockerAPI:
+
+class DockerConnection:
     def __init__(self):
-        self.client = docker.from_env()
+        self.client = DockerClient.from_env()
+        self.api_client = APIClient(base_url='unix://var/run/docker.sock')
 
     def scale_containers(self, service_name, scale_to):
         service = self.client.services.get(service_name)
@@ -17,8 +19,9 @@ class DockerAPI:
         return container.logs()
 
     def container_ids(self):
-        containers = self.client.containers.list(all=True)
+        containers = self.client.containers.list()
         return [container.id for container in containers]
+
 
     def count_containers(self):
         containers = self.client.containers.list()
@@ -39,3 +42,23 @@ class DockerAPI:
                 'mem_usage': container_stats['memory_stats']
             })
         return stats
+    
+    def get_container_ip(self, container_id):
+        try:
+            container = self.client.containers.get(container_id)
+            return container.attrs['NetworkSettings']['Networks']
+        except Exception as e:
+            print(f"Error getting IP address for container {container_id}: {e}")
+            return None
+        
+    def get_network_id(self, container_id):
+        container_info = self.api_client.inspect_container(container_id)
+        for network_name, network_details in container_info['NetworkSettings']['Networks'].items():
+            return network_details['NetworkID']
+        
+    def is_same_network(self, container_id, network_id):
+        container_info = self.api_client.inspect_container(container_id)
+        for network_name, network_details in container_info['NetworkSettings']['Networks'].items():
+            if network_details['NetworkID'] == network_id:
+                return True
+        return False

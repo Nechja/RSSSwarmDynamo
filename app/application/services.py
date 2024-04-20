@@ -1,5 +1,5 @@
 from ..infrastructure.mongodb_client import MongoDBClient
-from ..infrastructure.docker_api import DockerAPI
+from ..infrastructure.docker_api import DockerConnection
 from ..config.config import Config
 import time
 
@@ -13,35 +13,27 @@ class LeaderElectionService:
         return await self.db_client.elect_leader(self.config.CONTAINER_ID, self.config.LEADER_LEASE_DURATION)
 
 class MonitoringService:
-    def __init__(self, docker_api: DockerAPI):
+    def __init__(self, docker_api: DockerConnection, config: Config):
         self.docker_api = docker_api
+        self.config = config
         print("MonitoringService Started Up")
 
-    def report_container_health(self):
-        container_ids = self.docker_api.container_ids()
-        health_status = {container_id: self.docker_api.check_health(container_id) for container_id in container_ids}
-        print(health_status)
-        return health_status
-
-    def report_container_resources(self):
-        return self.docker_api.check_resources()
-
-    def alert_high_resource_usage(self, cpu_threshold=80, memory_threshold=80):
-        resources = self.docker_api.check_resources()
-        print(resources)
-
-    def monitor_containers(self):
-        import time
-        try:
-            while True:
-                print("Reporting Container Health")
-                print(self.report_container_health())
-                print("Reporting Resource Usage")
-                print(self.report_container_resources())
-                self.alert_high_resource_usage()
-                time.sleep(60)  
-        except KeyboardInterrupt:
-            print("Monitoring stopped by user.")
+    def get_containers(self):
+        return self.docker_api.container_ids()
+    
+    def get_containers_ips(self):
+        containers = self.get_containers()
+        ips = []
+        current_network_id = self.docker_api.get_network_id(self.config.CONTAINER_ID)
+        for container in containers:
+            if self.docker_api.is_same_network(container, current_network_id):
+                ip_info = self.docker_api.get_container_ip(container)
+                if ip_info:
+                    for network, network_info in ip_info.items():
+                        ip = network_info.get('IPAddress')
+                        if ip:
+                            ips.append(ip)
+        return ips
 
 
 class TaskService:
