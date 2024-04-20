@@ -28,7 +28,10 @@ class MonitoringService:
         containers = self.get_containers()
         ips = []
         current_network_id = self.docker_api.get_network_id(self.config.CONTAINER_ID)
+        current_container_long_id = self.docker_api.container_long_id_by_short_id(self.config.CONTAINER_ID)
         for container in containers:
+            if container == current_container_long_id:
+                continue
             if self.docker_api.is_same_network(container, current_network_id):
                 ip_info = self.docker_api.get_container_ip(container)
                 if ip_info:

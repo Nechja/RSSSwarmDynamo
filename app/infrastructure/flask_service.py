@@ -1,7 +1,7 @@
 from ..domain.entities import Task, Status, Occurance, NodeInfo
 from flask import Flask, request, jsonify
 
-class FlaskService:
+class FlaskFollowerService:
     def __init__(self, config):
         self.config = config
         self.app = Flask(__name__)
@@ -26,14 +26,14 @@ class FlaskService:
                     assignee=data.get('assignee', None),
                     last_run=data.get('last_run', None)
                 )
-                # Log or process the task here
                 return jsonify({'message': 'Task received', 'task': task.name}), 200
             except (KeyError, ValueError) as e:
                 return jsonify({'error': str(e)}), 400
         @self.app.route('/leader', methods=['POST'])
-        def leader_registration(leader):
+        def leader_registration():
+            leader = request.get_json() 
             self.leader = leader
-            print(f"Leader registered: {leader.ip}")
+            print(f"Leader registered: {leader['ip']}")
             return jsonify({'message': 'Leader registered'}), 200
 
             

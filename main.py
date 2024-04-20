@@ -2,7 +2,7 @@ from app.infrastructure.mongodb_client import MongoDBClient
 from app.infrastructure.docker_api import DockerConnection
 from app.application.services import LeaderElectionService, MonitoringService, TaskService
 from app.config.config import DevelopmentConfig, ProductionConfig, Config
-from app.infrastructure.flask_service import FlaskService
+from app.infrastructure.flask_service import FlaskFollowerService
 from app.infrastructure.http_client import HttpClient
 from app.domain.entities import NodeInfo
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
         else:
             print("I am not leader... searching for work to do...")
-            flask_service = FlaskService(config)
+            flask_service = FlaskFollowerService(config)
             flask_service.run()
 
 

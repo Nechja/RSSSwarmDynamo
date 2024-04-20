@@ -21,6 +21,9 @@ class DockerConnection:
     def container_ids(self):
         containers = self.client.containers.list()
         return [container.id for container in containers]
+    
+    def container_long_id_by_short_id(self, short_id):
+        return self.client.containers.get(short_id).id
 
 
     def count_containers(self):
