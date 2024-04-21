@@ -1,5 +1,7 @@
 from ..infrastructure.mongodb_client import MongoDBClient
 from ..infrastructure.docker_api import DockerConnection
+from ..infrastructure.http_client import HttpClient
+from ..domain.entities import NodeInfo
 from ..config.config import Config
 import time
 
@@ -67,15 +69,40 @@ class TaskService:
             print("winding into next task...")
             await self.start()
 
-
-        
-    
     async def checkout_task(self, task):
         return await self.db_client.checkout_task(task, self.config.CONTAINER_ID)
         
-
     async def run_task(self, task):
         time.sleep(30)
         print(f"Task {task['name']} completed.")
 
 
+class LeaderHttpService:
+    def __init__(self, config: Config, http_client: HttpClient, monitoring_service: MonitoringService):
+        self.config = config
+        self.http_client = http_client
+        self.monitoring_service = monitoring_service
+        print("LeaderHttpService Started Up")
+
+    def register_nodes(self, nodes):
+        for container in nodes:
+            my_ip = self.monitoring_service.get_my_ip()
+            leader_info = NodeInfo(ip=my_ip, id=self.config.CONTAINER_ID)
+            print(f"Sending leader info to {container}")
+            response = self.http_client.post(container, '/leader', leader_info.to_dict())
+            print(response)
+
+
+class FollowerHttpService:
+    def __init__(self, config: Config, http_client: HttpClient, monitoring_service: MonitoringService):
+        self.config = config
+        self.http_client = http_client
+        self.monitoring_service = monitoring_service
+        print("FollowerHttpService Started Up")
+
+    def register_leader(self, leader):
+        my_ip = self.monitoring_service.get_my_ip()
+        follower_info = NodeInfo(ip=my_ip, id=self.config.CONTAINER_ID)
+        print(f"Sending follower info to {leader}")
+        response = self.http_client.post(leader, '/nodes', follower_info.to_dict())
+        print(response)
