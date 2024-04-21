@@ -14,13 +14,13 @@ class LoggerService:
         self.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self.handler.setFormatter(self.formatter)
         self.logger.addHandler(self.handler)
-        self.console = Console()
+        self.consoleprint = Console()
         self.print = print
 
     def console(self, message):
         text = Text(message)
         text.stylize("bold cyan", 0, 6)
-        self.console.print(text)
+        self.consoleprint.print(text)
 
     def panel(self, message, title, border_style):
         text = Text(message)
